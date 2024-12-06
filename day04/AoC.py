@@ -1,20 +1,19 @@
 #!/usr/bin/python3
 
 import sys
-from itertools import product, count, permutations
+from itertools import product
 from copy import deepcopy
-import re
-from typing import List, Tuple, Dict
+from typing import List, Tuple
 
 
-W = (0, -1)    # left
-E = (0, 1)     # right
-N = (-1, 0)    # up
-S = (1, 0)     # down
-NW = (-1, -1)  # top left
-NE = (-1, 1)   # top right
-SW = (1, -1)   # bottom left
-SE = (1, 1)     # bottom right
+W = (0, -1)
+E = (0, 1)
+N = (-1, 0)
+S = (1, 0)
+NW = (-1, -1)
+NE = (-1, 1)
+SW = (1, -1)
+SE = (1, 1)
 DIRECTIONS = (N, E, S, W, NE, NW, SE, SW)
 
 
