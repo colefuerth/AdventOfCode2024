@@ -90,8 +90,6 @@ if __name__ == '__main__':
         l.strip()
         for l in open(fname, 'r').readlines()
     ]
-    
-    
 
     print('Part 1:', len(part1(deepcopy(f))))
     print('Part 2:', part2(deepcopy(f)))
