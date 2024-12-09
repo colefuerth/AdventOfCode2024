@@ -4,7 +4,7 @@ import sys
 from itertools import product, permutations
 from copy import deepcopy
 import re
-from typing import List, Dict, Tuple
+from typing import List, Tuple
 from collections import defaultdict
 
 
