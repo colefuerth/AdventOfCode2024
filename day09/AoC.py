@@ -1,8 +1,6 @@
 #!/usr/bin/python3
 
-
 import sys
-
 
 def part1(f: str) -> int:
     filetree = [[int(fill), int(empty)] for fill, empty in zip(f[::2], f[1::2])] + [[int(f[-1]), 0]]
@@ -16,7 +14,6 @@ def part1(f: str) -> int:
             d = disk.pop()
         cs += i * d
     return cs
-
 
 def part2(f: str) -> int:
     # create the disk of empty and full blocks
@@ -51,7 +48,6 @@ def part2(f: str) -> int:
                 cs += idx * x
                 idx += 1
     return cs
-
 
 if __name__ == '__main__':
     fname = sys.argv[1] if len(sys.argv) > 1 else 'input.txt'
