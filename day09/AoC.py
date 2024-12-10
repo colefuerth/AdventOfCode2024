@@ -1,14 +1,7 @@
 #!/usr/bin/python3
 
+
 import sys
-from itertools import product, count, permutations
-from copy import deepcopy
-import re
-from typing import List
-
-
-def ns(n: int) -> int:
-    return n*(n+1)//2
 
 
 def part1(f: str) -> int:
@@ -58,6 +51,7 @@ def part2(f: str) -> int:
                 cs += idx * x
                 idx += 1
     return cs
+
 
 if __name__ == '__main__':
     fname = sys.argv[1] if len(sys.argv) > 1 else 'input.txt'
