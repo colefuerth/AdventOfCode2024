@@ -13,52 +13,6 @@ def ns(n: int) -> int:
 
 def part1(f: str) -> int:
     filetree = [[int(fill), int(empty)] for fill, empty in zip(f[::2], f[1::2])] + [[int(f[-1]), 0]]
-    checksum = 0
-    idx = 0
-    i = 0
-    while i < len(filetree):
-        fill, empty = filetree[i]
-        
-        # process fill part first (ez)
-        checksum += i * (ns(idx + fill - 1) // (ns(idx - 1) if idx > 1 else 1))
-        idx += fill
-        
-        # last one only fills, dont bother with the empty or it double hits the last "fill"
-        if i == len(filetree) - 1:
-            break
-        
-        # fill 2 empty 2
-        # first bite should be nn(1)
-        # second bite should be nn(3) - nn(1)
-
-        # process empty part next (hard)
-        while empty > 0:
-            bite = empty
-            j = len(filetree) - 1
-            if empty > filetree[j][0]:
-                # set the bite size based on the last block
-                # remove the last filetree node since it is being eaten
-                bite = filetree.pop()[0]
-            elif empty < filetree[j][0]:
-                # take a bite out of the last filetree fill part
-                filetree[j][0] -= bite
-            else:
-                # if they are the same, just remove the last fill in the filetree and process the whole bite
-                filetree.pop()
-
-            # execute the bite with the checksum
-            checksum += j * (ns(idx + bite - 1) // (ns(idx - 1) if idx > 1 else 1))
-            # update the empty space size with the new bite
-            empty -= bite
-
-        # increment to next node in filetree
-        i += 1
-    print()
-    return checksum
-
-
-def part2(f: str) -> int:
-    filetree = [[int(fill), int(empty)] for fill, empty in zip(f[::2], f[1::2])] + [[int(f[-1]), 0]]
     disk = []
     for i, (fill, empty) in enumerate(filetree):
         disk.extend([i] * fill)
@@ -70,6 +24,40 @@ def part2(f: str) -> int:
         cs += i * d
     return cs
 
+
+def part2(f: str) -> int:
+    # create the disk of empty and full blocks
+    disk = []
+    for i, (fill, empty) in enumerate(zip(f[::2], f[1::2])):
+        disk.append([int(i), int(fill)])
+        disk.append(['.', int(empty)])
+    disk.append([len(f) // 2, int(f[-1])])
+    # iterate over the full blocks from largest to smallest
+    for block in reversed(disk[::2]):
+        size = block[1]
+        # get the first block to the left of the current block that is large enough to contain it, if any
+        empty = next(filter(lambda x: x[0] == '.' and x[1] >= size, disk[:disk.index(block)]), None)
+        if empty is None:
+            continue
+        # if a better empty block is found, shuffle the block into it and adjust filesystem for the new block
+        i = disk.index(empty)
+        if empty[1] > size:
+            empty[1] -= size
+        else:
+            disk.pop(i)
+        disk.insert(i, block[::])
+        block[0] = '.'
+    # calculate the checksum of the disk (scuffed but idc)
+    cs = 0
+    idx = 0
+    for x, size in disk:
+        if x == '.':
+            idx += size
+        else:
+            for _ in range(size):
+                cs += idx * x
+                idx += 1
+    return cs
 
 if __name__ == '__main__':
     fname = sys.argv[1] if len(sys.argv) > 1 else 'input.txt'
