@@ -2,27 +2,34 @@
 
 import sys
 from copy import deepcopy
-from typing import List
+from typing import List, Tuple
+from functools import cache
 
+@cache
+def process_rock_turn(rock: str) -> Tuple[str]:
+    if rock == '0':
+        return ('1',)
+    elif len(rock) % 2 == 0:
+        return (rock[:len(rock) // 2], str(int(rock[len(rock) // 2:])))
+    else:
+        return (str(int(rock) * 2024),)
+
+@cache
+def rock_to_n_turns(rock: str, n: int) -> int:
+    if n == 0:
+        return 1
+    return sum(rock_to_n_turns(r, n - 1) for r in process_rock_turn(rock))
 
 def part1(f: List[str]) -> int:
     for _ in range(25):
         nf = []
         for rock in f:
-            if rock == '0':
-                nf.append('1')
-            elif len(rock) % 2 == 0:
-                nf.append(rock[:len(rock) // 2])
-                nf.append(str(int(rock[len(rock) // 2:])))
-            else:
-                nf.append(str(int(rock) * 2024))
+            nf.extend(process_rock_turn(rock))
         f = nf
     return len(f)
 
-
 def part2(f: List[str]) -> int:
-    pass
-
+    return sum(rock_to_n_turns(rock, 75) for rock in f)
 
 if __name__ == '__main__':
     fname = sys.argv[1] if len(sys.argv) > 1 else 'input.txt'
