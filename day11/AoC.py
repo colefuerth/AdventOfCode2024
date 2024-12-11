@@ -20,6 +20,9 @@ def part1(f: List[str]) -> int:
     return len(f)
 
 
+def part2(f: List[str]) -> int:
+    pass
+
 if __name__ == '__main__':
     fname = sys.argv[1] if len(sys.argv) > 1 else 'input.txt'
     f = open(fname, 'r').readlines()[0].strip().split()
