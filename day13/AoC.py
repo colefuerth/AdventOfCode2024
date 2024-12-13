@@ -30,7 +30,7 @@ def part2(f: List[List[int]]) -> int:
     return total_cost
 
 if __name__ == '__main__':
-    fname = sys.argv[1] if len(sys.argv) > 1 else '/home/cole/AdventOfCode2024/day13/small.txt'
+    fname = sys.argv[1] if len(sys.argv) > 1 else 'input.txt'
     f = [
         list(map(int, machine))
         for machine in re.findall(
