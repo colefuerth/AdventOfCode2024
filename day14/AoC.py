@@ -4,7 +4,6 @@ import sys
 from copy import deepcopy
 import re
 from typing import List, Tuple
-from collections import defaultdict
 from math import prod
 
 def add(a: Tuple[int], b: Tuple[int]) -> Tuple[int]:
