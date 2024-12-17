@@ -1,8 +1,6 @@
 #!/usr/bin/python3
 
 import sys
-from itertools import count
-from copy import deepcopy
 import re
 from typing import List
 
@@ -52,7 +50,7 @@ def part1(f: List[int]) -> str:
 
 
 def part2(f: List[int]) -> int:
-    # each output of the program is functionally a modified base 8 number, reversed
+    # each output of the program is functionally a scrambled base 8 number
     program = f[3:]
 
     # base 8, so find the first spot where we reach that length of program output
@@ -63,7 +61,7 @@ def part2(f: List[int]) -> int:
         if result == program:
             return a
 
-        # match numbers right to left, as far right is most significant
+        # for each position right to left, increment it until we see the correct guy
         for i in range(len(result) - 1, -1, -1):
             if result[i] != program[i]:
                 a += 8 ** i
@@ -74,5 +72,5 @@ if __name__ == '__main__':
     fname = sys.argv[1] if len(sys.argv) > 1 else 'input.txt'
     f = [int(x) for x in re.findall(r'\d+', '\n'.join(open(fname, 'r').readlines()))]
 
-    print('Part 1:', part1(deepcopy(f)))
-    print('Part 2:', part2(deepcopy(f)))
+    print('Part 1:', part1(f))
+    print('Part 2:', part2(f))
