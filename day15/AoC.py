@@ -96,7 +96,6 @@ def part2(room: List[List[str]], moves: List[str]) -> int:
 if __name__ == '__main__':
     fname = sys.argv[1] if len(sys.argv) > 1 else 'input.txt'
     room, moves = open(fname).read().split('\n\n')
-    # Convert to lists of strings, removing any empty lines
     room = [list(line) for line in room.splitlines() if line]
     moves = [line for line in moves.splitlines() if line]
 
