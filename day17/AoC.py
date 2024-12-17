@@ -7,7 +7,7 @@ import re
 from typing import List
 
 
-def part1(f: List[int]) -> int:
+def run_program(f: List[int]) -> List[int]:
     a, b, c = f[:3]
     ip = 0
     program = f[3:]
@@ -38,21 +38,36 @@ def part1(f: List[int]) -> int:
             case 4: # bxc
                 b = b ^ c
             case 5: # out
-                stdout.append(str(combo_operand(operand) % 8))
+                stdout.append(combo_operand(operand) % 8)
             case 6: # bdv
                 b = a // (2 ** combo_operand(operand))
             case 7: # cdv
                 c = a // (2 ** combo_operand(operand))
         ip += 2
-    return ','.join(stdout)
+    return stdout
+
+
+def part1(f: List[int]) -> str:
+    return ','.join(map(str, run_program(f)))
+
 
 def part2(f: List[int]) -> int:
+    # each output of the program is functionally a modified base 8 number, reversed
     program = f[3:]
-    for i in range(1000):
-        result = part1([i] + f[1:])
-        print(f'{i}: {result}')
+
+    # base 8, so find the first spot where we reach that length of program output
+    a = sum(7 * 8**i for i in range(len(program) - 1)) + 1
+
+    while True:
+        result = run_program([a] + f[1:])
         if result == program:
-            return i
+            return a
+
+        # match numbers right to left, as far right is most significant
+        for i in range(len(result) - 1, -1, -1):
+            if result[i] != program[i]:
+                a += 8 ** i
+                break
 
 
 if __name__ == '__main__':
