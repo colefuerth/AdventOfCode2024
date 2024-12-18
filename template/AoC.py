@@ -1,10 +1,10 @@
 #!/usr/bin/python3
 
-import sys
-from itertools import product, count, permutations
-from copy import deepcopy
 import re
-from typing import List
+import sys
+from copy import deepcopy
+from typing import List, Tuple
+from itertools import product, count, permutations
 
 
 def part1(f: List[str]) -> int:
