@@ -22,8 +22,8 @@ def move_from(a: str, b: str, d: Tuple[str]) -> int:
     ax, ay = find_in_cartesian_plane(a, d)
     bx, by = find_in_cartesian_plane(b, d)
     v, h = bx - ax, by - ay
-    v = (("^" * -v) if v < 0 else "") + (("v" * v) if v > 0 else "")
-    h = ((">" * h) if h > 0 else "") + (("<" * -h) if h < 0 else "")
+    v = (("^" * -v) if v < 0 else ("v" * v))
+    h = (("<" * -h) if h < 0 else (">" * h))
 
     if by > ay and (bx, ay) != find_in_cartesian_plane(" ", d):
         return v + h + "A"
