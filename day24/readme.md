@@ -214,3 +214,136 @@ Your system of gates and wires has four pairs of gates which need their output w
 
 ## My part two solution
 
+If you expand the first six gates you get:
+
+```txt
+z05:
+(
+    (x05 XOR y05)
+    XOR 
+    (
+        (y04 AND x04)
+        OR 
+        (
+            (x04 XOR y04) 
+            AND 
+            (
+                (y03 AND x03) 
+                OR 
+                (
+                    (y03 XOR x03)
+                    AND 
+                    (
+                        (y02 AND x02)
+                        OR 
+                        (
+                            (x02 XOR y02) 
+                            AND 
+                            (
+                                (x01 AND y01) 
+                                OR 
+                                (
+                                    (y01 XOR x01) 
+                                    AND 
+                                    (x00 AND y00)
+                                )
+                            )
+                        ) 
+                    ) 
+                )
+            )
+        ) 
+    )
+)
+
+
+
+z04: 
+(
+    (x04 XOR y04) 
+    XOR 
+    (
+        (y03 AND x03) 
+        OR 
+        (
+            (y03 XOR x03)
+            AND 
+            (
+                (y02 AND x02)
+                OR 
+                (
+                    (x02 XOR y02) 
+                    AND 
+                    (
+                        (x01 AND y01) 
+                        OR 
+                        (
+                            (y01 XOR x01) 
+                            AND 
+                            (x00 AND y00)
+                        )
+                    )
+                ) 
+            ) 
+        )
+    )
+)
+
+
+
+z03: 
+(
+    (y03 XOR x03) 
+    XOR 
+    (
+        (y02 AND x02)
+        OR 
+        (
+            (x02 XOR y02) 
+            AND 
+            (
+                (x01 AND y01) 
+                OR 
+                (
+                    (y01 XOR x01) 
+                    AND 
+                    (x00 AND y00)
+                )
+            )
+        ) 
+    )
+)
+
+
+
+z02: 
+(
+    (x02 XOR y02) 
+    XOR 
+    (
+        (x01 AND y01) 
+        OR 
+        (
+            (y01 XOR x01) 
+            AND 
+            (x00 AND y00)
+        )
+    )
+)
+
+
+
+z01: 
+(
+    (y01 XOR x01) 
+    XOR 
+    (x00 AND y00)
+)
+
+
+
+z00: 
+(
+    x00 XOR y00
+)
+```

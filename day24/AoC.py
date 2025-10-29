@@ -4,7 +4,7 @@ import sys
 import pathlib
 from copy import deepcopy
 from typing import List, Dict, Optional, Union
-from itertools import groupby, pairwise, combinations
+from itertools import groupby, product
 from functools import cache
 
 # ------------------------------- PART 1 -----------------------------
@@ -65,26 +65,23 @@ class SchematicNode:
                 self.right == other.right) or
                 (self.left == other.right and
                 self.right == other.left))
-    
-    # def __hash__(self) -> int:
-    #     return hash(self.operation) ^ hash(self.left) ^ hash(self.right)
-
-    # def copy(self) -> 'SchematicNode':
-    #     left_copy = self.left.copy() if isinstance(self.left, SchematicNode) else self.left
-    #     right_copy = self.right.copy() if isinstance(self.right, SchematicNode) else self.right
-    #     return SchematicNode(left_copy, self.operation, right_copy)
 
 
-def build_actual_schematic(gate: str, known: Dict[str, int], gates: Dict[str, List[str]]) -> Union[SchematicNode, str]:
+def build_actual_schematic(gate: str, gates: Dict[str, List[str]]) -> Union[SchematicNode, str]:
     if gate[0] in "xy":
         return gate
     a, op, b = gates[gate]
     return SchematicNode(
-        build_actual_schematic(a, known, gates),
+        build_actual_schematic(a, gates),
         op,
-        build_actual_schematic(b, known, gates)
+        build_actual_schematic(b, gates)
     )
 
+def get_all_gates_in_chain(gate: str, gates: Dict[str, List[str]]) -> List[str]:
+    if gate[0] in "xy":
+        return []
+    a, _, b = gates[gate]
+    return [gate] + get_all_gates_in_chain(a, gates) + get_all_gates_in_chain(b, gates)
 
 @cache
 def build_expected_schematic(bit: int, toplevel: bool = True) -> SchematicNode:
@@ -114,13 +111,25 @@ def build_expected_schematic(bit: int, toplevel: bool = True) -> SchematicNode:
         )
     )
 
-
-def part2(known: Dict[str, int], gates: Dict[str, List[str]]) -> str:
+def part2(gates: Dict[str, List[str]]) -> str:
+    swaps = []
+    sys.setrecursionlimit(200) # genuinely faster than handling manually
     for bit in range(len([k for k in gates.keys() if k.startswith("z")])):
-        if build_actual_schematic(f"z{bit:02}", known, gates) != build_expected_schematic(bit):
-            # TODO: find which one is supposed to be here
-            pass
-    return ""
+        if build_actual_schematic(f"z{bit:02}", gates) != build_expected_schematic(bit):
+            potential_swaps = list(product(get_all_gates_in_chain(f"z{bit:02}", gates), gates.keys()))
+            for a, b in potential_swaps:
+                if a == b:
+                    continue
+                gates[a], gates[b] = gates[b], gates[a]
+                try:
+                    if build_actual_schematic(f"z{bit:02}", gates) == build_expected_schematic(bit):
+                        swaps.append(a)
+                        swaps.append(b)
+                        break
+                except RecursionError:
+                    pass
+                gates[a], gates[b] = gates[b], gates[a]
+    return ",".join(sorted(swaps))
 
 # ------------------------------------------------------------
 
@@ -137,4 +146,4 @@ if __name__ == "__main__":
              for a, out in [l.split(" -> ") for l in groups[1]]}
 
     print("Part 1:", part1(deepcopy(known), deepcopy(gates)))
-    print("Part 2:", part2(deepcopy(known), deepcopy(gates)))
+    print("Part 2:", part2(deepcopy(gates)))
