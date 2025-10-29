@@ -67,14 +67,16 @@ class SchematicNode:
                 self.right == other.left))
 
 
-def build_actual_schematic(gate: str, gates: Dict[str, List[str]]) -> Union[SchematicNode, str]:
+def build_actual_schematic(gate: str, known: Dict[str, Union[SchematicNode, str]], gates: Dict[str, List[str]]) -> Union[SchematicNode, str]:
     if gate[0] in "xy":
         return gate
+    if gate in known:
+        return known[gate]
     a, op, b = gates[gate]
     return SchematicNode(
-        build_actual_schematic(a, gates),
+        build_actual_schematic(a, known, gates),
         op,
-        build_actual_schematic(b, gates)
+        build_actual_schematic(b, known, gates)
     )
 
 def get_all_gates_in_chain(gate: str, gates: Dict[str, List[str]]) -> List[str]:
@@ -112,23 +114,31 @@ def build_expected_schematic(bit: int, toplevel: bool = True) -> SchematicNode:
     )
 
 def part2(gates: Dict[str, List[str]]) -> str:
-    swaps = []
+    swaps: List[str] = []
+    known: Dict[str, Union[SchematicNode, str]] = {}
     sys.setrecursionlimit(200) # genuinely faster than handling manually
+    # go lsb to msb
     for bit in range(len([k for k in gates.keys() if k.startswith("z")])):
-        if build_actual_schematic(f"z{bit:02}", gates) != build_expected_schematic(bit):
+        # check if z{bit:02} is correct
+        if build_actual_schematic(f"z{bit:02}", known, gates) != build_expected_schematic(bit):
+            # try all swaps of gates in the chain with all other gates
             potential_swaps = list(product(get_all_gates_in_chain(f"z{bit:02}", gates), gates.keys()))
             for a, b in potential_swaps:
                 if a == b:
                     continue
                 gates[a], gates[b] = gates[b], gates[a]
                 try:
-                    if build_actual_schematic(f"z{bit:02}", gates) == build_expected_schematic(bit):
+                    # if it is correct, record the swap and break
+                    if build_actual_schematic(f"z{bit:02}", known, gates) == build_expected_schematic(bit):
                         swaps.append(a)
                         swaps.append(b)
                         break
                 except RecursionError:
                     pass
                 gates[a], gates[b] = gates[b], gates[a]
+        # by this stage, we should have confirmed z{bit:02} is correct, so update known
+        for gate in get_all_gates_in_chain(f"z{bit:02}", gates):
+            known[gate] = build_actual_schematic(gate, known, gates)
     return ",".join(sorted(swaps))
 
 # ------------------------------------------------------------
